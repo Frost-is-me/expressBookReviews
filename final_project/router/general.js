@@ -5,9 +5,10 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 public_users.delete("/register",(req,res) =>{
-    const user = req.params.username;
-    if(users[user]){
-        delete users[user];
+    const username = req.params.username;
+    const userIndex = users.filter(user => user.username === username);
+    if(userIndex !== -1){
+        users.splice(userIndex, 1);
         return res.status(200).json({message: " user has been deleted"})
     }
     else{
@@ -20,11 +21,11 @@ public_users.post("/register", (req,res) => {
  if(!username || !password){
    return res.status(400).json({message: "invalid reuest"})
 }
- if(users[username]){
+ if(isValid(username)){
     return res.status(400).json({message:" user is aleady resgisterd"});
  }
  else{
-    users[username] = username,password;
+    users.push({username, password});
     return res.status(200).json({message:" user is registerd succecfully"});
  };
 });

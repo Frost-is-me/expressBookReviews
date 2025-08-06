@@ -11,17 +11,17 @@ if(name.length > 0){
     return true
 }
 else{
-    false
+    return false
 }
 }
 
 const authenticatedUser = (username,password)=>{ 
 let info = users.filter(user => user.username === username && user.password === password)
-if(info){
+if(info.length > 0){
     return true
 }
 else{
-    false
+    return false
 }
 }
 
@@ -46,8 +46,25 @@ regd_users.post("/login", (req,res) => {
 });
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const isbn = req.params.isbn;
+  const user = req.session.authorization ? req.session.authorization.username : null;
+  const review = req.query.review;
+  
+  if(!user){
+    return res.status(404).json({message: "user is not logged in"})
+  }
+
+  if(!review){
+    return res.status(404).json({message: "user didnt submit a review"});
+  }
+  
+  if(!books[isbn]){
+    return res.status(404).json({message: "Book not found"});
+  }
+  
+  books[isbn].reviews[user] = review;
+  const result = books[isbn].reviews[user]
+  res.send(JSON.stringify({result},null,4))
 });
 
 module.exports.authenticated = regd_users;
