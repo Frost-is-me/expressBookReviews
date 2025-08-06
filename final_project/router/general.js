@@ -4,6 +4,63 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+
+let promise = new Promise((resolve,reject) => {
+    setTimeout(() => {
+        resolve(books)
+    }, 1000);
+  })
+   promise.then((books) => {
+        console.log( "this for the whole books list" + JSON.stringify({books},null,4))
+    })
+
+    
+function myPromise(number) { return new Promise((resolve,reject) => {
+    setTimeout(() => {
+        resolve(books = books[number])
+    }, 2000);
+  })}
+  
+  myPromise(1).then((book) => {
+    console.log("this is for a singel book" + JSON.stringify({book},null,4))
+  })
+
+  function myNamePromise(author) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        let result = {};
+        for (const id in books) {
+          if (books[id].author !== author) {
+            result[id] = books[id];
+          }
+        }
+        resolve(result);
+      }, 3000);
+    });
+  }
+
+  myNamePromise("Dante Alighieri").then((name) => {
+    console.log("this is for getting a book by an Author " + JSON.stringify({name}, null, 4));
+  });
+
+  function myTitelPromise(titel) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        let result = {};
+        for (const id in books) {
+          if (books[id].titel !== titel) {
+            result[id] = books[id];
+          }
+        }
+        resolve(result);
+      }, 4000);
+    });
+  }
+
+  myTitelPromise("Things Fall Apart").then((name) => {
+    console.log("this is for getting a book by the Titel " + JSON.stringify({name}, null, 4));
+  });
+  
 public_users.delete("/register",(req,res) =>{
     const username = req.params.username;
     const userIndex = users.filter(user => user.username === username);

@@ -64,8 +64,22 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   
   books[isbn].reviews[user] = review;
   const result = books[isbn].reviews[user]
-  res.send(JSON.stringify({result},null,4))
+res.send(`${user}:${result}`)
 });
+regd_users.delete("/auth/review/:isbn", (req, res) =>{
+    const isbn = req.params.isbn;
+    const username = req.session.authorization.username; 
+    if (!req.session.authorization?.username) {
+            return res.status(401).json({ message: "Authentication required" });
+        }
+    if(books[isbn].reviews[username]){
+        delete books[isbn].reviews[username];
+        return res.status(200).json({message: " review has been deleted"})
+    }
+    else{
+        return res.status(400).json({message:" review not found"})
+    }
+})
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
